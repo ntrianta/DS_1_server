@@ -1,4 +1,6 @@
 import socket
+import dgramconn
+
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -11,13 +13,14 @@ sock.bind(addr)
 sock.listen(1)
 
 while True:
-    connection, client = sock.accept()
-
-    data = connection.recv(16)
+    connection, client_addr = sock.accept()
+    dc = dgramconn.DatagramConnection(connection)
+    data = dc.recv()
     if data:
-        connection.sendall(data)
         print data
+        dc.send(data)
     else:
         print 'no data'
 
-    connection.close()
+    dc.close()
+
